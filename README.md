@@ -1,4 +1,4 @@
-# **Install ROS2 and pytorch for yolov5 On Jetson Nano** 
+# **Install ROS2 and PyTorch for yolov5 On Jetson Nano** 
 
 This Document is useful to install **ROS2**, on **Jetson Nano** with **CUDA enabled pytorch and openCV**
 
@@ -12,7 +12,7 @@ This Document is useful to install **ROS2**, on **Jetson Nano** with **CUDA enab
 
 
 
-## **Upgrade Jetpack OS from ubuntu 18.04 to 20.04** 
+## **Upgrade Jetpack OS from Ubuntu 18.04 to 20.04** 
 
 - Officially Jetpack only supports Ubuntu 18.04. In order to install ros2 foxy distribution  we need to upgrade the system from 18.04 to 20.04. 
 
@@ -50,8 +50,8 @@ sudo apt update && sudo apt upgrade
 
 #### Step 3 
 
--- Before going to Next step You need to uninstall and remove chromium browser package 
--- to avoid problem arise durning upgrade
+- Before going to Next step You need to uninstall and remove chromium browser package 
+- to avoid problem arise durning upgrade
 
 ```python
 sudo dpkg --remove chromium-browser
@@ -287,7 +287,7 @@ sudo apt install ros-dev-tools
 ```
 
 
-### Step 4 Env set up
+### Step 4 Environment setup
 
 -Set up your environment by sourcing the following file.
 
@@ -304,12 +304,13 @@ source /opt/ros/foxy/setup.bash
 ros2 topic list 
 ```
 
-output :- 
+Output should look like this :- 
 
 ```python 
 
 /parameter_events
 /rosout
+
 ```
 
 
@@ -320,14 +321,13 @@ output :-
 #### Optional : After the ROS workplace  source the setup bash for ros and in bashrc file 
 
 ```python 
-
 sudo vi .bashrc 
-
 ```
 
-and add following lines 
+And add following lines at the end
 
-```python 
+```python
+
 source /opt/ros/foxy/setup.bash
 source ~/<path to your ros2 ws>/install/setup.bash
 source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
