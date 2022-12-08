@@ -1,6 +1,8 @@
-# **Jetson Nano** 
+# **Install ROS2 and pytorch for yolov5 On Jetson Nano** 
 
 This Document is useful to install **ROS2**, on **Jetson Nano** with **CUDA enabled pytorch and openCV**
+
+- fist we need to **upgrade  Jetson nano** from 18.04 to 20.04 and the install **ros foxy** and **Install pytorch** 
 
 
 ## System requirement
@@ -8,7 +10,9 @@ This Document is useful to install **ROS2**, on **Jetson Nano** with **CUDA enab
 - Jetson Nano 
 - Jetpack 4.6 or higher 
 
-## Step 1 : Upgrade Jetpack OS from ubuntu 18.04 to 20.04 
+
+
+## **Upgrade Jetpack OS from ubuntu 18.04 to 20.04** 
 
 - Officially Jetpack only supports Ubuntu 18.04. In order to install ros2 foxy distribution  we need to upgrade the system from 18.04 to 20.04. 
 
@@ -146,7 +150,69 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 ```
 
 
-## Install  ROS2 foxy 
+## **PyTorch and TorchVision install  on Nano** 
+
+- PyTorch version 1.12.0 
+- TorchVision 0.13.0 
+
+- This pytorch wheel is built by Qengineering/PyTorch-Jetson-Nano this is link to  github page[link](https://github.com/Qengineering/PyTorch-Jetson-Nano)
+
+- If you want to install different version of PyTorch and TorchVision check this the link by Qengineering[link](https://qengineering.eu/install-pytorch-on-jetson-nano.html) 
+
+### PyTorch install
+
+
+- Only for a Jetson Nano with Ubuntu 20.04
+
+```python
+
+# install the dependencies (if not already onboard)
+$ sudo apt-get install python3-pip libjpeg-dev libopenblas-dev libopenmpi-dev libomp-dev
+$ sudo -H pip3 install future
+$ sudo pip3 install -U --user wheel mock pillow
+$ sudo -H pip3 install testresources
+# above 58.3.0 you get version issues
+$ sudo -H pip3 install setuptools==58.3.0
+$ sudo -H pip3 install Cython
+# install gdown to download from Google drive
+$ sudo -H pip3 install gdown
+# download the wheel
+$ gdown https://drive.google.com/uc?id=1MnVB7I4N8iVDAkogJO76CiQ2KRbyXH_e
+# install PyTorch 1.12.0
+$ sudo -H pip3 install torch-1.12.0a0+git67ece03-cp38-cp38-linux_aarch64.whl
+# clean up
+$ rm torch-1.12.0a0+git67ece03-cp38-cp38-linux_aarch64.whl
+
+
+```
+
+### TorchVision Install 
+
+- Torchvision is a collection of frequent used datasets, architectures and image algorithms. The installation is simple when you use one of our wheels found on GitHub. Torchvision assumes PyTorch is installed on your machine on the forehand.
+
+- Only for a Jetson Nano with Ubuntu 20.04
+
+- Used with PyTorch 1.12.0
+
+```python
+
+# the dependencies
+$ sudo apt-get install libjpeg-dev zlib1g-dev libpython3-dev
+$ sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev
+$ sudo pip3 install -U pillow
+# install gdown to download from Google drive, if not done yet
+$ sudo -H pip3 install gdown
+# download TorchVision 0.13.0
+$ gdown https://drive.google.com/uc?id=11DPKcWzLjZa5kRXRodRJ3t9md0EMydhj
+# install TorchVision 0.13.0
+$ sudo -H pip3 install torchvision-0.13.0a0+da3794e-cp38-cp38-linux_aarch64.whl
+# clean up
+$ rm torchvision-0.13.0a0+da3794e-cp38-cp38-linux_aarch64.whl
+
+```
+
+
+## **Install  ROS2 foxy**
 
 - please check official website for ros2 foxy here [Link  Here](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)
 
@@ -154,7 +220,7 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 
 - Make sure you have a locale which supports UTF-8. If you are in a minimal environment (such as a docker container), the locale may be something minimal like POSIX. We test with the following settings. However, it should be fine if you’re using a different UTF-8 supported locale.
 
-``` 
+```python
 locale  # check for UTF-8
 
 sudo apt update && sudo apt install locales
@@ -168,7 +234,7 @@ export LANG=en_US.UTF-8
 
 - Add ROS2 repo to your system 
 
-```
+```python
 
 sudo apt install software-properties-common
 sudo add-apt-repository universe
@@ -178,7 +244,7 @@ sudo add-apt-repository universe
 - Now add the ROS 2 GPG key with apt.
 
 
-```
+```python
 sudo apt update && sudo apt install curl
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
@@ -186,7 +252,7 @@ sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o
 
 - Add repo to your source list 
 
-``` 
+```python
 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 ```
@@ -196,27 +262,27 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 
 - Update and upgrade  your apt repository caches after setting up the repositories
 
-``` 
+```python
 sudo apt update
 sudo apt upgrade
 ```
 
 - Desktop Install (Recommended): ROS, RViz, demos, tutorials.
 
-```
+```python
 sudo apt install ros-foxy-desktop python3-argcomplete
 ```
 
 - ROS-Base Install (Bare Bones): Communication libraries, message packages, command line tools. No GUI tools.
 
 
-```
+```python
 sudo apt install ros-foxy-ros-base python3-argcomplete
 ```
 
 - Development tools: Compilers and other tools to build ROS packages
 
-```
+```python
 sudo apt install ros-dev-tools
 ```
 
@@ -267,7 +333,3 @@ source ~/<path to your ros2 ws>/install/setup.bash
 source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
 
 ```
-
-
-
-
