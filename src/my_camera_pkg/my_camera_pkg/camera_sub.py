@@ -1,5 +1,3 @@
-
-
 import rclpy 
 from rclpy.node import Node 
 from sensor_msgs.msg import Image 
@@ -39,21 +37,12 @@ class ImageSubscriber(Node):
 		"""
 		
 		self.get_logger().info('Receiving image_raw')
-		self.new_frame_time = time.time()
+		
 		# Convert ROS Image message to OpenCV image
 		current_frame = self.br.imgmsg_to_cv2(data)
-  
-		fps = 1/(self.new_frame_time-self.prev_frame_time)
-		self.prev_frame_time = self.new_frame_time
-
-		fps = int(fps)
-		fps = str(fps)
-		print(f'Frame rate recivead in the ros2 node : {fps}')
-		
 		# Display image
-		cv2.resizeWindow(f"{self.window_name}", 100, 100)
 		cv2.imshow(f"{self.window_name}", current_frame)
-	
+
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			cv2.destroyAllWindows()
 			

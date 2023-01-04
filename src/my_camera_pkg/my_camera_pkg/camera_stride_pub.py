@@ -11,7 +11,7 @@ class ImagePublisher(Node):
         super().__init__('camera_stride_pub')
         # declear paramer 
         self.declare_parameter('camera_id', 0)
-        self.declare_parameter('vid_stride', 1)
+        self.declare_parameter('vid_stride', 10)
         # create publisher
         self.publisher_ = self.create_publisher(Image, 'image_raw', 1)
         self.publisher2_ = self.create_publisher(Float64, 'fps', 1)
@@ -45,13 +45,11 @@ class ImagePublisher(Node):
             if count % self.vid_stride == 0:
                 # rezie the frame
                 resized_fram = cv2.resize(frame,  image_dims, interpolation = cv2.INTER_AREA ) 
-                height, width, channels = resized_fram.shape              
                 # Publish the image
                 self.publisher_.publish(self.br.cv2_to_imgmsg(resized_fram))
                 self.publisher2_.publish(fps)
-                height, width, channels = resized_fram.shape
                 self.get_logger().info(f'Publishing {self.source} image_raw')
-                self.get_logger().info(f'height : {height}, width : {width}, channels : {channels}')
+                # self.get_logger().info(f'height : {height}, width : {width}, channels : {channels}')
                 # check the frame size 
                 
             count += 1
