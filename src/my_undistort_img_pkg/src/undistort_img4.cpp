@@ -18,13 +18,13 @@
 #include "include/camera.h"
 
 
-class UndistortImagePublisher2 :  public rclcpp::Node, public Camera
+class UndistortImagePublisher4 :  public rclcpp::Node, public Camera
 {
     public:
-        UndistortImagePublisher2() : Node("UndistortImagePublisher2"),  Camera("rtsp://192.168.73.12:8554/jpeg", 1280, 720 )
+        UndistortImagePublisher4() : Node("UndistortImagePublisher4"),  Camera("rtsp://192.168.73.10:8554/jpeg", 1280, 720 )
         {
-            publisher_ = this->create_publisher<sensor_msgs::msg::Image>("/undistorded/image_raw_2", 1);
-            timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&UndistortImagePublisher2::timer_callback, this));
+            publisher_ = this->create_publisher<sensor_msgs::msg::Image>("/undistorded/image_raw_4", 1);
+            timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&UndistortImagePublisher4::timer_callback, this));
             RCLCPP_INFO(this->get_logger(), "camera publisher cpp node");
             
             
@@ -33,7 +33,9 @@ class UndistortImagePublisher2 :  public rclcpp::Node, public Camera
     private:
         void timer_callback(){
 
+ 
             cv_bridge::CvImagePtr cv_ptr;
+            
             
 
             this->initialize = this-> getImage(true);
@@ -45,7 +47,7 @@ class UndistortImagePublisher2 :  public rclcpp::Node, public Camera
             
             publisher_->publish(*msg.get());
             // RCLCPP_INFO(this->get_logger(), "Published!");
-
+          
 
             
         }
@@ -62,7 +64,7 @@ class UndistortImagePublisher2 :  public rclcpp::Node, public Camera
 int main(int argc, char * argv[])
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<UndistortImagePublisher2>();
+    auto node = std::make_shared<UndistortImagePublisher4>();
     rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;

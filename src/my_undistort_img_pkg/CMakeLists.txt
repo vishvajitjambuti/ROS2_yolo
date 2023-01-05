@@ -29,20 +29,32 @@ find_package(cv_bridge REQUIRED)
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
 # find_package(<dependency> REQUIRED)
 
-add_executable(undistort_img src/undistort_img.cpp)
-ament_target_dependencies(undistort_img rclcpp std_msgs sensor_msgs image_transport OpenCV cv_bridge)
+add_executable(distorted_img src/distorted_img.cpp)
+ament_target_dependencies(distorted_img rclcpp std_msgs sensor_msgs image_transport OpenCV cv_bridge)
 
 
 
-set(SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/src/camera.cpp")
+set(SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/Source/camera.cpp")
+
+add_executable(undistort_img1 src/undistort_img1.cpp ${SOURCES})
+ament_target_dependencies(undistort_img1 rclcpp std_msgs sensor_msgs image_transport OpenCV cv_bridge)
 
 add_executable(undistort_img2 src/undistort_img2.cpp ${SOURCES})
 ament_target_dependencies(undistort_img2 rclcpp std_msgs sensor_msgs image_transport OpenCV cv_bridge)
 
+add_executable(undistort_img3 src/undistort_img3.cpp ${SOURCES})
+ament_target_dependencies(undistort_img3 rclcpp std_msgs sensor_msgs image_transport OpenCV cv_bridge)
+
+add_executable(undistort_img4 src/undistort_img4.cpp ${SOURCES})
+ament_target_dependencies(undistort_img4 rclcpp std_msgs sensor_msgs image_transport OpenCV cv_bridge)
+
 
 install(TARGETS
-  undistort_img
+  distorted_img
+  undistort_img1
   undistort_img2
+  undistort_img3
+  undistort_img4
   DESTINATION lib/${PROJECT_NAME}
 )
 

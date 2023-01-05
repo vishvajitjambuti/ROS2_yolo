@@ -190,8 +190,10 @@ class yolo5PreProcess():
             # Stream results
             im0 = annotator.result()
             if self.view_img:
-                cv2.imshow("yolov5", im0)
-                cv2.waitKey(1)  # 1 millisecond
+                # cv2.imshow("yolov5", im0)
+                # cv2.waitKey(1)  # 1 millisecond
+                print('please subscribe to /yolov5/image_raw topic')
+                
             
             return class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list
         
@@ -293,9 +295,9 @@ class Yolo5Ros(Node):
 
         print("start ==================")
         # self.get_logger().info('Publishing: %s' % msg)
-        # print(class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list)
+        print(class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list)
         # self.get_logger().info(f"class list: {class_list} conf_list:{confidence_list} loc: {x_min_list, y_min_list, x_max_list, y_max_list}")
-        self.get_logger().info(f"class is: {msg.bounding_boxes[0].class_id, msg.bounding_boxes[0].probability,  msg.bounding_boxes[0].xmin, msg.bounding_boxes[0].ymin, msg.bounding_boxes[0].xmax, msg.bounding_boxes[0].ymax}")
+        # self.get_logger().info(f"class is: {msg.bounding_boxes[0].class_id, msg.bounding_boxes[0].probability,  msg.bounding_boxes[0].xmin, msg.bounding_boxes[0].ymin, msg.bounding_boxes[0].xmax, msg.bounding_boxes[0].ymax}")
         print("end ====================")
         
 def main(args=None):

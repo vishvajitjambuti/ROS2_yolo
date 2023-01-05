@@ -4,8 +4,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
     
-    src_1 = 'rtsp://172.16.128.11:8554/h264'
-    src_2 = 'rtsp://172.16.128.12:8554/h264'
+    src_1 = 0
+    src_2 = 2
     
     
     camera_publisher_node_1 = Node(
@@ -30,12 +30,27 @@ def generate_launch_description():
         executable='yolo_2cam_detect',
         name = 'object_detection_node',
     )
-    
+    camera_sub_1 = Node(
+        package="my_camera_pkg",
+        executable="camera_sub",
+        name="camera_sub_1",
+        remappings=[('image_raw', '/yolov5/image_raw_1')],
+        parameters=[{'window_name': "camera_sub_1"}]
+    )
+    camera_sub_2 = Node(
+        package="my_camera_pkg",
+        executable="camera_sub",
+        name="camera_sub_2",
+        remappings=[('image_raw', '/yolov5/image_raw_2')],
+        parameters=[{'window_name': "camera_sub_2"}]
+    )
     
     ld.add_action(camera_publisher_node_1)
     # ld.add_action(camera_sub)
     ld.add_action(camera_publisher_node_2)
     ld.add_action(object_detection_node)
+    ld.add_action(camera_sub_1)
+    ld.add_action(camera_sub_2)
     
     return ld
     

@@ -194,8 +194,10 @@ class yolo5PreProcess():
             # Stream results
             im0 = annotator.result()
             if self.view_img:
-                cv2.imshow(f"{window_name}", im0)
-                cv2.waitKey(1)  # 1 millisecond
+                # cv2.imshow(f"{window_name}", im0)
+                # cv2.waitKey(1)  # 1 millisecond
+                print('please subcribe to /yolov5/image_raw topic')
+                
 
             return class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list
         
@@ -204,8 +206,10 @@ class Yolo5Ros(Node):
         super().__init__('yolov5_2cam')
 
         self.bridge = CvBridge()
-        self.pub_bbox = self.create_publisher(BoundingBoxes, 'yolov5/bounding_boxes', 1)
-        self.pub_image = self.create_publisher(Image, 'yolov5/image_raw', 1)
+        self.pub_bbox_1 = self.create_publisher(BoundingBoxes, 'yolov5/bounding_boxes_1', 1)
+        self.pub_bbox_2 = self.create_publisher(BoundingBoxes, 'yolov5/bounding_boxes_2', 1)
+        self.pub_image_1 = self.create_publisher(Image, 'yolov5/image_raw_1', 1)
+        self.pub_image_2 = self.create_publisher(Image, 'yolov5/image_raw_2', 1)
 
         self.sub_image_1 = self.create_subscription(Image, 'img_1', self.image_callback_1,1)
         self.sub_image_2 = self.create_subscription(Image, 'img_2', self.image_callback_2,1)
@@ -298,14 +302,14 @@ class Yolo5Ros(Node):
         class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list = self.yolov5.image_callback_pp(image_raw, "src_1")
 
         msg = self.yolovFive2bboxes_msgs(bboxes=[x_min_list, y_min_list, x_max_list, y_max_list], scores=confidence_list, cls=class_list, img_header=image.header)
-        self.pub_bbox.publish(msg)
+        self.pub_bbox_1.publish(msg)
 
-        self.pub_image.publish(image)
+        self.pub_image_1.publish(image)
 
         print("start ==================")
-        # print(class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list)
-        self.get_logger().info(f"class list: {class_list} conf_list:{confidence_list}")
-        self.get_logger().info(f"loc: {x_min_list, y_min_list, x_max_list, y_max_list}")
+        print(class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list)
+        # self.get_logger().info(f"class list: {class_list} conf_list:{confidence_list}")
+        # self.get_logger().info(f"loc: {x_min_list, y_min_list, x_max_list, y_max_list}")
         print("end ====================")
         
     def image_callback_2(self, image:Image):
@@ -318,15 +322,15 @@ class Yolo5Ros(Node):
         class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list = self.yolov5.image_callback_pp(image_raw, "src_2")
 
         msg = self.yolovFive2bboxes_msgs(bboxes=[x_min_list, y_min_list, x_max_list, y_max_list], scores=confidence_list, cls=class_list, img_header=image.header)
-        self.pub_bbox.publish(msg)
+        self.pub_bbox_2.publish(msg)
 
-        self.pub_image.publish(image)
+        self.pub_image_2.publish(image)
 
         print("start ==================")
-        self.get_logger().info(f"class list: {class_list} conf_list:{confidence_list}")
-        self.get_logger().info(f"loc: {x_min_list, y_min_list, x_max_list, y_max_list}")
-        self.get_logger().info(f"class is: {msg.bounding_boxes[0].class_id}")
-        # print(class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list)
+        # self.get_logger().info(f"class list: {class_list} conf_list:{confidence_list}")
+        # self.get_logger().info(f"loc: {x_min_list, y_min_list, x_max_list, y_max_list}")
+        # self.get_logger().info(f"class is: {msg.bounding_boxes[0].class_id}")
+        print(class_list, confidence_list, x_min_list, y_min_list, x_max_list, y_max_list)
         print("end ====================")
         
         

@@ -106,7 +106,7 @@ void Camera::record(float fps){
 }
 
 void Camera::initializeCamera(bool record) {
-    readIntrinsicExtrinsic("/home/vishvajit/ros2_ws/src/my_undistort_img_pkg/src/src/distortionMatrix.yml");
+    readIntrinsicExtrinsic("/home/vishvajit/ros2_ws/src/my_undistort_img_pkg/src/Source/distortionMatrix.yml");
 
     if (record) {
 
