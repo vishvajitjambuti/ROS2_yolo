@@ -22,9 +22,11 @@ class UndistortImagePublisher :  public rclcpp::Node, public Camera
 {
     public:
         UndistortImagePublisher() : Node("UndistortImagePublisher1"),  Camera("rtsp://192.168.73.11:8554/jpeg", 1280, 720 )
-        {
+        {   
+            this->declare_parameter("wall_timer", 1000);
+            wall_timer_ = this->get_parameter("wall_timer").as_int();           
             publisher_ = this->create_publisher<sensor_msgs::msg::Image>("/undistorded/image_raw_1", 1);
-            timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&UndistortImagePublisher::timer_callback, this));
+            timer_ = this->create_wall_timer(std::chrono::milliseconds(wall_timer_), std::bind(&UndistortImagePublisher::timer_callback, this));
             RCLCPP_INFO(this->get_logger(), "camera publisher cpp node");
             
             
@@ -57,6 +59,7 @@ class UndistortImagePublisher :  public rclcpp::Node, public Camera
         cv::Mat img;
         cv::Mat outImg;
         cv::Mat initialize; 
+        int wall_timer_;
         
 };
 

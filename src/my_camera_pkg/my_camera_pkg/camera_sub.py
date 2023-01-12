@@ -20,9 +20,7 @@ class ImageSubscriber(Node):
 		self.declare_parameter('window_name', 'camera')
 		
 	
-		self.subscription = self.create_subscription(Image, 'image_raw', 
-															self.listener_callback,
-															1)
+		self.subscription = self.create_subscription(Image, 'image_raw', self.listener_callback, 1)													
 		self.subscription2 = self.create_subscription(Float64, 'fps', self.cb, 1)
 		self.get_logger().info('Camera Subscriber has been started')
 		self.subscription # prevent unused variable warning

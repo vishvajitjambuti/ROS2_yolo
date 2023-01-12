@@ -4,7 +4,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
     
-    remap_inpute_node = ('/undistorded/image_raw', 'cam_1')
+    remap_inpute_node = ('/undistorded/image_raw_2', 'cam_1')
     remap_op_node = ('image_raw', 'cam_1')
     
     camera_publisher_node = Node(

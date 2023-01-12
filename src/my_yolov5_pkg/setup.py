@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'yolo_detect = my_yolov5_pkg.yolo_detect:main',
             'yolo_2cam_detect = my_yolov5_pkg.yolo_2cam_detect:main',
+            'yolo_4cam_detect = my_yolov5_pkg.yolo_4cam_detect:main',
         ],
     },
 )

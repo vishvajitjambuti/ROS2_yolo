@@ -1,0 +1,7 @@
+#ifndef SOAS_BIRDVIEW_H
+#define SOAS_BIRDVIEW_H
+
+#endif //SOAS_BIRDVIEW_H
+
+
+
