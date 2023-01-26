@@ -23,8 +23,7 @@ from cv_bridge import CvBridge
 
 CONF_THRESH = 0.5
 IOU_THRESHOLD = 0.4
-
-
+'''
 def get_img_path_batches(batch_size, img_dir):
     ret = []
     batch = []
@@ -37,7 +36,7 @@ def get_img_path_batches(batch_size, img_dir):
     if len(batch) > 0:
         ret.append(batch)
     return ret
-
+'''
 def plot_one_box(x, img, color=None, label=None, line_thickness=None):
     """
     description: Plots one bounding box on image img,
@@ -133,6 +132,7 @@ class YoLov5TRT(object):
         # Make self the active context, pushing it on top of the context stack.
         self.ctx.push()
         # Restore
+        #print(categories)
         stream = self.stream
         context = self.context
         engine = self.engine
@@ -185,14 +185,16 @@ class YoLov5TRT(object):
             )
             # Draw rectangles and labels on the original image
             for j in range(len(result_boxes)):
-                box = result_boxes[j]
-                plot_one_box(
-                    box,
-                    image_raw,
-                    label="{}:{:.2f}".format(
-                        categories[int(result_classid[j])], result_scores[j]
-                    ),
-                )
+               # print(categories[j])
+                if int(result_classid[j])<7:
+                    box = result_boxes[j]
+                    print(result_classid[j])
+                    plot_one_box(
+                        box,
+                        image_raw,
+                        label="{}".format(categories[int(result_classid[j])] ),
+                        )
+                #label="{}:{:.2f}".format(categories[int(result_classid[j])], result_scores[j] ),
         return image_raw, end - start
 
     def destroy(self):
@@ -302,7 +304,7 @@ class YoLov5TRT(object):
             result_scores: finally scores, a numpy, each element is the score correspoing to box
             result_classid: finally classid, a numpy, each element is the classid correspoing to box
         """
-        # Get the num of boxes detected
+        # Get the num of boxes detectedcolcon build --packages-select my_tensorRt_pkg --symlink-install 
         num = int(output[0])
         # Reshape to a two dimentional ndarray
         pred = np.reshape(output[1:], (-1, 6))[:num, :]
@@ -370,7 +372,7 @@ class YoLov5TRT(object):
         # clip the coordinates
         boxes[:, 0] = np.clip(boxes[:, 0], 0, origin_w -1)
         boxes[:, 2] = np.clip(boxes[:, 2], 0, origin_w -1)
-        boxes[:, 1] = np.clip(boxes[:, 1], 0, origin_h -1)
+        boxes[:, 1] = np.clip(boxes[:, 1], 0, origin_h -1) 
         boxes[:, 3] = np.clip(boxes[:, 3], 0, origin_h -1)
         # Object confidence
         confs = boxes[:, 4]
@@ -381,7 +383,7 @@ class YoLov5TRT(object):
         while boxes.shape[0]:
             large_overlap = self.bbox_iou(np.expand_dims(boxes[0, :4], 0), boxes[:, :4]) > nms_thres
             label_match = boxes[0, -1] == boxes[:, -1]
-            # Indices of boxes with lower confidence scores, large IOUs and matching labels
+            # Indirtnode_new.py", lces of boxes with lower confidence scores, large IOUs and matching labels
             invalid = large_overlap & label_match
             keep_boxes += [boxes[0]]
             boxes = boxes[~invalid]
@@ -434,17 +436,17 @@ class YoloTrt(Node):
         super().__init__('trt_yolo')
 
         self.pub_image_1 = self.create_publisher(Image, 'trt_image', 10)
-        self.pub_image_2 = self.create_publisher(Image, 'trt_image_2', 10)
+        
         timer_period = 0.025  # seconds
         self.timer = timer_period
-        self.sub_img1 = self.create_subscription(Image, 'image_1',self.timer_callback_1,10)
-        self.sub_img2 = self.create_subscription(Image, 'image_2',self.timer_callback_2,10)
-        self.sub_img
+        self.sub_img1 = self.create_subscription(Image, 'img_1',self.timer_callback_1,10)
+        
+        self.sub_img1
 
         # Create the timer
         #self.timer = self.create_timer(timer_period, self.timer_callback)
-        PLUGIN_LIBRARY = "/tmp/.X11-unix/ROS2_final_Thesis/src/YOLOv5-ROS/yolov5_ros/yolov5_ros/build/libmyplugins.so"
-        engine_file_path = "/tmp/.X11-unix/ROS2_final_Thesis/src/YOLOv5-ROS/yolov5_ros/yolov5_ros/build/trt_5vl.engine"
+        PLUGIN_LIBRARY = "/home/ROS2_yolo/src/my_tensorRt_pkg/my_tensorRt_pkg/build/libmyplugins.so"
+        engine_file_path = "/home/ROS2_yolo/src/my_tensorRt_pkg/my_tensorRt_pkg/build/Vishvajit_trt.engine"
 
         if len(sys.argv) > 1:
             engine_file_path = sys.argv[1]
@@ -455,22 +457,9 @@ class YoloTrt(Node):
 
         # load coco labels
 
-        self.categories_karan = ["Speed limit (20km/h)"," Speed limit (30km/h)","Speed limit (50km/h)", "Speed limit (60km/h)","Speed limit (70km/h)","Speed limit (80km/h)",
-                "End of speed limit (80km/h)","Speed limit (100km/h)","Speed limit (120km/h)","No passing", "No passing veh over 3.5 tons","Right-of-way at intersection",
-                "Priority road","Yield","Stop","No vehicles","Veh > 3.5 tons prohibited","No entry","General caution","Dangerous curve left","Dangerous curve right", 
-                "Double curve","Bumpy road","Slippery road","Road narrows on the right", "Road work","Traffic signals","Pedestrians", "Children crossing","Bicycles crossing",
-                "Beware of ice/snow","Wild animals crossing","End speed + passing limits","Turn right ahead","Turn left ahead","Ahead only","Go straight or right",
-                "Go straight or left","Keep right","Keep left","Roundabout mandatory","End of no passing","End no passing veh > 3.5 tons"]
+        
 
-        self.categories =  ["person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
-            "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
-            "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
-            "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
-            "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
-            "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
-            "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
-            "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
-            "hair drier", "toothbrush"]
+        self.categories = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
  
         
         if os.path.exists('output/'):
@@ -484,36 +473,16 @@ class YoloTrt(Node):
         #self.yolov5_wrapper = yolov5_wrapper
         #self.cap = cv2.VideoCapture(0)
         categories = self.categories
-        '''while (True):
-            ret,frame = self.cap.read()
-            result, use_time = self.yolov5_wrapper.infer(frame, categories)
-            self.pub_image.publish(self.br.cv2_to_imgmsg(result))
-            cv2.imshow('final', result)
-            cv2.waitKey(1)'''
+        #print(len(categories))
         try:
             image_raw = self.br.imgmsg_to_cv2(image)
             result, use_time = self.yolov5_wrapper.infer(image_raw, categories)
             self.pub_image_1.publish(self.br.cv2_to_imgmsg(result))
-        finally:
-            #self.yolov5_wrapper.destroy()
-            print('Program ended!!')
-    def timer_callback_2(self, image:Image):
-        #self.yolov5_wrapper = yolov5_wrapper
-        #self.cap = cv2.VideoCapture(0)
-        categories = self.categories
-        '''while (True):
-            ret,frame = self.cap.read()
-            result, use_time = self.yolov5_wrapper.infer(frame, categories)
-            self.pub_image.publish(self.br.cv2_to_imgmsg(result))
-            cv2.imshow('final', result)
-            cv2.waitKey(1)'''
-        try:
-            image_raw = self.br.imgmsg_to_cv2(image)
-            result, use_time = self.yolov5_wrapper.infer(image_raw, categories)
-            self.pub_image_2.publish(self.br.cv2_to_imgmsg(result))
-        finally:
-            #self.yolov5_wrapper.destroy()
-            print('Program ended!!')
+            cv2.imshow('Front', result )
+            cv2.waitKey(1)
+        except KeyboardInterrupt:
+            self.yolov5_wrapper.destroy()
+            exit(0)
     
     
 def main(args=None):
@@ -522,9 +491,6 @@ def main(args=None):
     rclpy.spin(yolov5_node)
     yolov5_node.destroy_node()
     rclpy.shutdown()
-    
+
 if __name__ == '__main__':
-    main()
-            
-        
-        
+    main() 

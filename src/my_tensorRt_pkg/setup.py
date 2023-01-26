@@ -20,6 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'TRT_node =my_tensorRt_pkg.trtnode_new:main',
+            'multicam_trt =my_tensorRt_pkg.multicam_trt:main',
+            'twocam_trt = my_tensorRt_pkg.twocam_trt:main ',
         ],
     },
 )

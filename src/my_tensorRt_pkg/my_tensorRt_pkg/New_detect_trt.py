@@ -179,6 +179,7 @@ class YoLov5TRT(object):
             # Draw rectangles and labels on the original image
             for j in range(len(result_boxes)):
                 box = result_boxes[j]
+                print(result_classid[j])
                 plot_one_box(
                     box,
                     image_raw,
@@ -419,8 +420,8 @@ class warmUpThread(threading.Thread):
 
 if __name__ == "__main__":
     # load custom plugin and engine
-    PLUGIN_LIBRARY = "build/libmyplugins.so"
-    engine_file_path = "build/trt_5vl.engine"
+    PLUGIN_LIBRARY = "/home/ROS2_yolo/src/my_tensorRt_pkg/my_tensorRt_pkg/build/libmyplugins.so"
+    engine_file_path = "/home/ROS2_yolo/src/my_tensorRt_pkg/my_tensorRt_pkg/build/yolov5s.engine"
 
     if len(sys.argv) > 1:
         engine_file_path = sys.argv[1]
